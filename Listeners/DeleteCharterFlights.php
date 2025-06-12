@@ -47,7 +47,7 @@ class DeleteCharterFlights extends Listener
 
             // if Pirep is in progress, then don't do anything.
             $pirep = Pirep::where(['flight_id' => $flight->id, 'user_id' => $flight->user_id])->first();
-            if ($pirep->state == PirepState::IN_PROGRESS) {
+            if ($pirep && $pirep->state == PirepState::IN_PROGRESS) {
                 continue;
             }
 

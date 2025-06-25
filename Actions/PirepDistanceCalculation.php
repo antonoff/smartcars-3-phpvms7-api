@@ -16,6 +16,7 @@ class PirepDistanceCalculation
         $path_points = $pirep->acars()->get();
 
         $distance = 0;
+        $units = config('phpvms.internal_units.distance', 'nmi');
         Log::debug("PathPoints:".$path_points->count());
         if ($path_points->count() == 0) {
             $geotools = new Geotools();
@@ -23,7 +24,7 @@ class PirepDistanceCalculation
             $end = new Coordinate([$pirep->arr_airport->lat, $pirep->arr_airport->lon]);
             $dist = $geotools->distance()->setFrom($start)->setTo($end);
 
-            return $dist->in(config('phpvms.internal_units.distance', 'nmi'))->greatCircle();
+            return $dist->in($units)->greatCircle();
         }
 
         for($i = 0; $i + 1 < $path_points->count(); $i++) {
@@ -34,8 +35,7 @@ class PirepDistanceCalculation
             $start = new Coordinate([$from->lat, $from->lon]);
             $end = new Coordinate([$to->lat, $to->lon]);
             $dist = $geotools->distance()->setFrom($start)->setTo($end);
-            //Log::debug("Leg ".$i.": ".$dist->in(config('phpvms.internal_units.distance', 'nmi'))->greatCircle());
-            $distance = $distance + $dist->greatCircle() / 1852;
+            $distance += $dist->in($units)->greatCircle();
 
         }
 

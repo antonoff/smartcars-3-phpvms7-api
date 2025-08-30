@@ -10,6 +10,18 @@ use League\Geotools\Geotools;
 
 class PirepDistanceCalculation
 {
+    /**
+     * Calculate the total great-circle distance for a PIREP.
+     *
+     * If the PIREP has ACARS path points, the distance is the sum of great-circle distances
+     * between consecutive path points. If there are no path points, the distance is the
+     * great-circle distance between the departure and arrival airports.
+     *
+     * Note: If the PIREP has exactly one path point the method returns 0 (no leg to measure).
+     *
+     * @param Pirep $pirep The PIREP model to calculate distance for (expects dpt_airport, arr_airport and acars relationship).
+     * @return float Total distance in the units configured by `phpvms.internal_units.distance` (defaults to 'nmi').
+     */
     public static function calculatePirepDistance(Pirep $pirep) : float
     {
         //
